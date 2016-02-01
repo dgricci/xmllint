@@ -21,8 +21,34 @@ Finally, we test the image under multiple use case :
 ## The XML/XSD script linter ##
 
 The shortest path to write such a linter is to use `xmllint` from the
-`libxml2` project. We assume that `libxml2-utils` is installed in the host (or
-any ubuntu 14.04 VM).
+`libxml2` project.
+
+### Building the solution via docker ###
+
+We can assume that `libxml2-utils` is installed in the host (or
+any ubuntu 14.04 VM), but one can also develop the solution within a
+container :
+
+```bash
+$ cd /data/git/xmllint
+$ docker run -it -v `pwd`:/home/xmllint ubuntu:14.04
+root@2a6f4018b8af:/# apt-get update
+...
+root@2a6f4018b8af:/# apt-get install libxml2-utils
+...
+root@2a6f4018b8af:/# cd /home/xmllint
+root@2a6f4018b8af:/home/xmllint# vi xsdlint.sh
+...
+root@2a6f4018b8af:/home/xmllint# ./xsdlint.sh --help
+...
+root@2a6f4018b8af:/home/xmllint# exit
+```
+
+Thus without "poluting" the host, one can directly prototype and test the
+different layers of the up-coming Dockerfile and also the script (which is
+shared between the container and the host - thanks to `-v` flag - !
+
+### The bourne again shell script ###
 
 The `xsdlint.sh` looks like :
 
@@ -124,7 +150,9 @@ run 100 "${cmdToExec}"
 exit 0
 ```
 
-We can test it :
+### Unitary test ###
+
+We can now test it (either one the host or into the container) :
 
 * no parameters are given :
 
@@ -194,7 +222,7 @@ $ ./xsdlint.sh stagiaires.xsd /data/git/xml2-a/exos/stagiaires.xml
 
 ## Create the docker image ##
 
-The `Dockerfile` is based on ubuntu:14.04. It installs the `libxml2-utils`
+The `Dockerfile` is based on `ubuntu:14.04`. It installs the `libxml2-utils`
 package, then copy the `xsdlint.sh` shell script into the image. It also
 defined the default command as `xsdlint.sh` and, when no arguments are given
 to the container (at the run stage), it passes in the `--help` option to the
@@ -343,7 +371,7 @@ dgricci/xmllint     0.0.1               af873920e066        2 minutes ago    212
 dgricci/xmllint     latest              af873920e066        2 minutes ago    212.1 MB
 ```
 
-## Run the image ##
+## Run the image for some tests ##
 
 * no arguments, check `--help` is passed in :
 
