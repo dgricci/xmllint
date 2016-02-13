@@ -14,7 +14,7 @@ the XML/XSD files. Let's call it `xsdlint.sh`.
 Once `xsdlint.sh` is tested, we write the `Dockerfile` and then build the images.
 Finally, we test the image under multiple use case :
 
-* no arguments given : check that --help is passed to `xsdlin.sh` ;
+* no arguments given : check that `--help` is passed to `xsdlint.sh` ;
 * give path to files and xml file : check that the validation is done ;
 * don't give path to files : check that validation raises an error !
 
