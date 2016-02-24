@@ -1,8 +1,9 @@
-FROM ubuntu:14.04
+FROM alpine:3.3
 MAINTAINER Didier Richard <didier.richard@ign.fr>
 RUN \
-    apt-get update && \
-    apt-get install -yq libxml2-utils
+    apk update && \
+    apk add --no-cache --update-cache bash libxml2-utils && \
+    rm -rf /var/cache/apk/*
 COPY xsdlint.sh /usr/bin/xsdlint.sh
 ENTRYPOINT ["xsdlint.sh"]
 CMD ["--help"]
